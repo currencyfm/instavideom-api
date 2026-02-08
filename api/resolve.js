@@ -1,9 +1,12 @@
 export default async function handler(req, res) {
+  console.log("REQUEST METHOD:", req.method);
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { url } = req.body;
+  console.log("INPUT URL:", url);
 
   if (!url || !url.includes("instagram.com")) {
     return res.status(400).json({ error: "Invalid Instagram URL" });
@@ -24,19 +27,19 @@ export default async function handler(req, res) {
 
     const data = await r.json();
 
-    // 🔴 DEBUG: RAW RESPONSE
     console.log("RAW RESPONSE:", JSON.stringify(data));
 
-    // Esnek alan araması (EaseApi varyasyonları)
     const videoUrl =
       data?.data?.video_url ||
       data?.data?.media?.video_url ||
       data?.data?.download_url ||
-      data?.video_url ||
-      data?.url;
+      data?.data?.video;
 
     if (!videoUrl) {
-      return res.status(404).json({ error: "Video not found" });
+      return res.status(404).json({
+        error: "Video not found",
+        raw: data,
+      });
     }
 
     return res.status(200).json({ video_url: videoUrl });
