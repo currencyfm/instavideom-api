@@ -15,7 +15,6 @@ export default async function handler(req, res) {
       encodeURIComponent(url);
 
     const response = await fetch(apiUrl, {
-      method: "GET",
       headers: {
         "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
         "X-RapidAPI-Host": "instagram-reels-downloader-api.p.rapidapi.com",
@@ -24,13 +23,9 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // EaseApi response parsing
-    const videoUrl =
-      data?.data?.video_url ||
-      data?.data?.media?.video_url ||
-      data?.data?.download_url ||
-      data?.data?.video ||
-      data?.video;
+    const videoUrl = data?.data?.medias?.find(
+      (m) => m.type === "video"
+    )?.url;
 
     if (!videoUrl) {
       return res.status(404).json({
@@ -39,9 +34,7 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(200).json({
-      video_url: videoUrl,
-    });
+    return res.status(200).json({ video_url: videoUrl });
   } catch (err) {
     return res.status(500).json({
       error: "Server error",
