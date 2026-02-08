@@ -24,11 +24,16 @@ export default async function handler(req, res) {
 
     const data = await r.json();
 
-    // EaseApi response uyumu
+    // 🔴 DEBUG: RAW RESPONSE
+    console.log("RAW RESPONSE:", JSON.stringify(data));
+
+    // Esnek alan araması (EaseApi varyasyonları)
     const videoUrl =
       data?.data?.video_url ||
       data?.data?.media?.video_url ||
-      data?.data?.download_url;
+      data?.data?.download_url ||
+      data?.video_url ||
+      data?.url;
 
     if (!videoUrl) {
       return res.status(404).json({ error: "Video not found" });
@@ -36,6 +41,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ video_url: videoUrl });
   } catch (e) {
+    console.error("SERVER ERROR:", e);
     return res.status(500).json({ error: "Server error" });
   }
 }
