@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
   try {
     const apiUrl =
-      "https://instagram-reels-downloader-api.p.rapidapi.com/downloadReel?url=" +
+      "https://instagram-reels-downloader-api.p.rapidapi.com/download?url=" +
       encodeURIComponent(url);
 
     const response = await fetch(apiUrl, {
