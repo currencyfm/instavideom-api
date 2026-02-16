@@ -24,7 +24,8 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    const videoUrl = data?.data?.url;
+    // ✅ Yeni endpoint yapısına göre mp4 buradan geliyor
+    const videoUrl = data?.medias?.[0]?.url;
 
     if (!videoUrl) {
       return res.status(404).json({
